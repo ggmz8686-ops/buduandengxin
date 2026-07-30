@@ -16,6 +16,7 @@ const mapBoard = document.querySelector(".map-board");
 const contactTrigger = document.querySelector(".contact-trigger");
 const mailPopover = document.querySelector("#mailPopover");
 const mailClose = document.querySelector(".mail-close");
+const anchorLinks = [...document.querySelectorAll('a[href^="#"]')];
 
 const skillCopy = {
   ai: {
@@ -117,10 +118,35 @@ function revealOnScroll() {
   revealEls.forEach((el) => observer.observe(el));
 }
 
+function scrollToSectionCenter(target) {
+  if (!target) return;
+
+  const rect = target.getBoundingClientRect();
+  const absoluteTop = rect.top + window.scrollY;
+  const headerOffset = window.innerWidth > 640 ? 46 : 0;
+  const centeredTop = absoluteTop - (window.innerHeight - rect.height) / 2 - headerOffset;
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+  window.scrollTo({
+    top: Math.max(0, Math.min(centeredTop, maxScroll)),
+    behavior: "smooth",
+  });
+}
+
 function bindNavigation() {
   nodes.forEach((node) => {
     node.addEventListener("click", () => {
-      document.getElementById(node.dataset.target)?.scrollIntoView({ behavior: "smooth" });
+      scrollToSectionCenter(document.getElementById(node.dataset.target));
+    });
+  });
+
+  anchorLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const target = document.querySelector(link.getAttribute("href"));
+      if (!target) return;
+
+      event.preventDefault();
+      scrollToSectionCenter(target);
     });
   });
 }
