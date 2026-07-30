@@ -705,12 +705,12 @@ h1 span::after {
 
 .tourist-leg-left {
   left: 18px;
-  animation: leftStep 0.34s steps(2) infinite;
+  animation: leftStep 0.58s steps(2) infinite;
 }
 
 .tourist-leg-right {
   left: 29px;
-  animation: rightStep 0.34s steps(2) infinite;
+  animation: rightStep 0.58s steps(2) infinite;
 }
 
 .tourist-pack {

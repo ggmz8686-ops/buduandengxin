@@ -401,19 +401,49 @@ function bindDraggableCollagePieces() {
 function bindMapTourist() {
   if (!mapBoard) return;
 
+  const tourState = {
+    currentX: 50,
+    currentY: 50,
+    targetX: 50,
+    targetY: 50,
+    raf: 0,
+    active: false,
+  };
+
+  const writeTour = () => {
+    tourState.currentX += (tourState.targetX - tourState.currentX) * 0.055;
+    tourState.currentY += (tourState.targetY - tourState.currentY) * 0.055;
+    mapBoard.style.setProperty("--tour-x", `${tourState.currentX.toFixed(2)}%`);
+    mapBoard.style.setProperty("--tour-y", `${tourState.currentY.toFixed(2)}%`);
+
+    if (tourState.active) {
+      tourState.raf = requestAnimationFrame(writeTour);
+    } else {
+      tourState.raf = 0;
+    }
+  };
+
+  const startTour = () => {
+    if (!tourState.raf) tourState.raf = requestAnimationFrame(writeTour);
+  };
+
   mapBoard.addEventListener("mouseenter", () => {
+    tourState.active = true;
     mapBoard.classList.add("is-touring");
+    startTour();
   });
 
   mapBoard.addEventListener("mousemove", (event) => {
     const rect = mapBoard.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 100;
     const y = ((event.clientY - rect.top) / rect.height) * 100;
-    mapBoard.style.setProperty("--tour-x", `${x.toFixed(2)}%`);
-    mapBoard.style.setProperty("--tour-y", `${y.toFixed(2)}%`);
+    tourState.targetX = Math.max(2, Math.min(98, x));
+    tourState.targetY = Math.max(3, Math.min(97, y));
+    startTour();
   });
 
   mapBoard.addEventListener("mouseleave", () => {
+    tourState.active = false;
     mapBoard.classList.remove("is-touring");
   });
 }
