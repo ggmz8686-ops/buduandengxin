@@ -180,7 +180,7 @@ h1 span::after {
   content: "";
   position: absolute;
   left: clamp(8.6rem, 16vw, 14.8rem);
-  top: 0.86em;
+  top: 0.93em;
   width: clamp(150px, 16vw, 230px);
   height: 9px;
   background: var(--red);
