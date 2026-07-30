@@ -1646,6 +1646,23 @@ h1 span::after {
   color: var(--blue);
 }
 
+.pdf-error {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  padding: 24px;
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  box-shadow: 6px 6px 0 var(--ink);
+  font-weight: 900;
+}
+
+.pdf-error a {
+  width: max-content;
+  color: var(--blue);
+}
+
 .doc-sections {
   display: grid;
   gap: 18px;

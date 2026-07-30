@@ -1,4 +1,5 @@
 .screenshots/
+.chrome-debug-profile*/
 assets/docs/
 check-site.mjs
 *.inspect.ndjson

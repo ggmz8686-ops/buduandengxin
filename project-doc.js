@@ -13,18 +13,14 @@ const pdfViewer = document.querySelector("#pdfViewer");
 const pdfStatus = document.querySelector("#pdfStatus");
 const pdfFallback = document.querySelector("#pdfFallback");
 
+const pdfJsVersion = "2.16.105";
+const pdfWorkerUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfJsVersion}/pdf.worker.min.js`;
+
 const previewFiles = {
   evtol: "./assets/previews/evtol-source.pdf",
   casebook: "./assets/previews/casebook-source.pdf",
   lineage: "./assets/previews/lineage-source.pdf",
   kansei: "./assets/previews/kansei-source.pdf",
-};
-
-const previewPages = {
-  evtol: { directory: "./assets/previews/pages/evtol", count: 48 },
-  casebook: { directory: "./assets/previews/pages/casebook", count: 31 },
-  lineage: { directory: "./assets/previews/pages/lineage", count: 17 },
-  kansei: { directory: "./assets/previews/pages/kansei", count: 47 },
 };
 
 const protectedProjects = new Set(["casebook", "lineage"]);
@@ -33,11 +29,11 @@ function renderDocument() {
   if (!project) return;
 
   const previewUrl = previewFiles[projectId] || previewFiles.evtol;
-  const pageSet = previewPages[projectId] || previewPages.evtol;
   document.title = `${project.title} | 王钰琪`;
   docKicker.textContent = project.kicker;
   docTitle.textContent = project.title;
   docSummary.textContent = project.summary;
+
   if (protectedProjects.has(projectId)) {
     docNotice.hidden = false;
     docNotice.textContent = "真实业务资料，外传将追究法律责任。";
@@ -45,6 +41,7 @@ function renderDocument() {
     docNotice.hidden = true;
     docNotice.textContent = "";
   }
+
   pdfFallback.href = previewUrl;
   docIndex.replaceChildren();
   docSections.replaceChildren();
@@ -73,36 +70,91 @@ function renderDocument() {
     docSections.appendChild(section);
   });
 
-  renderPreviewPages(pageSet, previewUrl);
+  renderPdf(previewUrl);
 }
 
 renderDocument();
 
-function renderPreviewPages(pageSet, previewUrl) {
+async function renderPdf(previewUrl) {
   if (!pdfViewer || !pdfStatus) return;
 
   pdfViewer.replaceChildren();
-  pdfStatus.textContent = `已载入 ${pageSet.count} 页图片预览`;
+  pdfStatus.textContent = "正在用 PDF.js 加载文档...";
 
-  for (let pageNumber = 1; pageNumber <= pageSet.count; pageNumber += 1) {
-    const frame = document.createElement("article");
-    frame.className = "pdf-page";
-
-    const label = document.createElement("span");
-    label.textContent = `${String(pageNumber).padStart(2, "0")} / ${String(pageSet.count).padStart(2, "0")}`;
-
-    const image = document.createElement("img");
-    image.alt = `${project.title} 第 ${pageNumber} 页`;
-    image.loading = pageNumber <= 2 ? "eager" : "lazy";
-    image.decoding = "async";
-    image.src = `${pageSet.directory}/page-${String(pageNumber).padStart(3, "0")}.jpg`;
-
-    frame.append(label, image);
-    pdfViewer.appendChild(frame);
+  const pdfjsLib = window.pdfjsLib;
+  if (!pdfjsLib) {
+    renderPdfError(previewUrl, "PDF.js CDN 没有加载成功，请检查网络后刷新页面。");
+    return;
   }
 
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
+  try {
+    const pdf = await pdfjsLib.getDocument(previewUrl).promise;
+    pdfStatus.textContent = `PDF.js 已读取 ${pdf.numPages} 页，正在逐页渲染...`;
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      await renderPdfPage(pdf, pageNumber);
+      pdfStatus.textContent = `正在渲染 ${pageNumber} / ${pdf.numPages} 页`;
+      await nextFrame();
+    }
+
+    pdfStatus.textContent = `已用 PDF.js 渲染 ${pdf.numPages} 页`;
+    appendFallbackNote(previewUrl);
+  } catch (error) {
+    console.error("PDF render failed", error);
+    renderPdfError(previewUrl, "PDF 渲染失败，可以先用右上角打开原始 PDF。");
+  }
+}
+
+async function renderPdfPage(pdf, pageNumber) {
+  const page = await pdf.getPage(pageNumber);
+  const baseViewport = page.getViewport({ scale: 1 });
+  const availableWidth = Math.min(pdfViewer.clientWidth - 48, 1120);
+  const cssScale = Math.max(0.45, Math.min(1.6, availableWidth / baseViewport.width));
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const viewport = page.getViewport({ scale: cssScale * dpr });
+
+  const frame = document.createElement("article");
+  frame.className = "pdf-page";
+
+  const label = document.createElement("span");
+  label.textContent = `${String(pageNumber).padStart(2, "0")} / ${String(pdf.numPages).padStart(2, "0")}`;
+
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d", { alpha: false });
+  canvas.width = Math.floor(viewport.width);
+  canvas.height = Math.floor(viewport.height);
+  canvas.style.width = `${Math.floor(viewport.width / dpr)}px`;
+  canvas.style.height = `${Math.floor(viewport.height / dpr)}px`;
+  canvas.setAttribute("aria-label", `${project.title} 第 ${pageNumber} 页`);
+
+  frame.append(label, canvas);
+  pdfViewer.appendChild(frame);
+
+  await page.render({ canvasContext: context, viewport }).promise;
+}
+
+function appendFallbackNote(previewUrl) {
   const fallbackNote = document.createElement("p");
   fallbackNote.className = "pdf-fallback-note";
-  fallbackNote.innerHTML = `图片预览不完整时，可使用右上角 <a href="${previewUrl}" target="_blank" rel="noreferrer">打开 PDF</a>。`;
+  fallbackNote.innerHTML = `如果浏览器渲染不完整，可使用右上角 <a href="${previewUrl}" target="_blank" rel="noreferrer">打开 PDF</a>。`;
   pdfViewer.appendChild(fallbackNote);
+}
+
+function renderPdfError(previewUrl, message) {
+  pdfViewer.replaceChildren();
+  pdfStatus.textContent = "PDF.js 渲染未完成";
+
+  const errorCard = document.createElement("div");
+  errorCard.className = "pdf-error";
+  errorCard.innerHTML = `
+    <b>${message}</b>
+    <a href="${previewUrl}" target="_blank" rel="noreferrer">打开 PDF</a>
+  `;
+  pdfViewer.appendChild(errorCard);
+}
+
+function nextFrame() {
+  return new Promise((resolve) => requestAnimationFrame(resolve));
 }
