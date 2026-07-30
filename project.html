@@ -35,13 +35,17 @@
           <p class="eyebrow">Source preview</p>
           <h2>在网页里查看原始 PPT / Word</h2>
         </div>
-        <iframe id="docFrame" title="项目源文件预览"></iframe>
+        <div class="pdf-toolbar">
+          <span id="pdfStatus">正在把文档铺开...</span>
+          <a id="pdfFallback" href="#" target="_blank" rel="noreferrer">打开 PDF</a>
+        </div>
+        <div class="pdf-viewer" id="pdfViewer" aria-live="polite"></div>
       </section>
 
       <section class="doc-sections" id="docSections" aria-label="项目正文"></section>
     </main>
 
     <script src="./content.js"></script>
-    <script src="./project-doc.js"></script>
+    <script type="module" src="./project-doc.js"></script>
   </body>
 </html>

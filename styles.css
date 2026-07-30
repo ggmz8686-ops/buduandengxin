@@ -1325,13 +1325,61 @@ h1 span {
   line-height: 1.08;
 }
 
-#docFrame {
-  display: block;
-  width: 100%;
-  height: min(76vh, 760px);
+.pdf-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 46px;
+  padding: 0 14px;
   border: 2px solid var(--ink);
   background: var(--paper-2);
+  box-shadow: 6px 6px 0 var(--ink);
+  font-family: var(--mono);
+  font-weight: 900;
+}
+
+.pdf-toolbar a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.pdf-viewer {
+  display: grid;
+  gap: 24px;
+  max-height: 82vh;
+  margin-top: 18px;
+  padding: 22px;
+  border: 2px solid var(--ink);
+  background:
+    radial-gradient(circle at 80% 12%, rgba(240, 52, 36, 0.08), transparent 16rem),
+    rgba(255, 250, 240, 0.74);
   box-shadow: 10px 10px 0 var(--ink);
+  overflow: auto;
+}
+
+.pdf-page {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 1080px);
+  margin: 0 auto;
+}
+
+.pdf-page span {
+  width: max-content;
+  padding: 5px 8px;
+  background: var(--yellow);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-weight: 900;
+}
+
+.pdf-page canvas {
+  display: block;
+  max-width: 100%;
+  border: 1px solid rgba(16, 17, 22, 0.28);
+  background: white;
+  box-shadow: 5px 5px 0 rgba(16, 17, 22, 0.22);
 }
 
 .doc-sections {

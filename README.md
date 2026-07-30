@@ -18,7 +18,7 @@ python -m http.server 4173
 - Publish Directory: `.`
 - Blueprint: 连接 GitHub 仓库后，Render 会读取 `render.yaml`
 
-岛屿项目页通过 `assets/previews/*.pdf` 在网页内预览 PPT / Word 转换后的 PDF。
+岛屿项目页通过 PDF.js 将 `assets/previews/*.pdf` 渲染到网页 canvas 中，避免浏览器把文件当作附件下载。
 
 ## 结构
 
