@@ -1484,6 +1484,20 @@ h1 span::after {
   color: var(--ink);
 }
 
+.doc-notice {
+  position: relative;
+  z-index: 1;
+  width: max-content;
+  max-width: 100%;
+  margin: 22px 0 0;
+  padding: 8px 12px;
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+  box-shadow: 5px 5px 0 var(--red);
+  font-weight: 900;
+}
+
 .doc-index {
   margin: 48px 0 26px;
 }
@@ -1611,12 +1625,25 @@ h1 span::after {
   font-weight: 900;
 }
 
+.pdf-page img,
 .pdf-page canvas {
   display: block;
+  width: 100%;
   max-width: 100%;
   border: 1px solid rgba(16, 17, 22, 0.28);
   background: white;
   box-shadow: 5px 5px 0 rgba(16, 17, 22, 0.22);
+}
+
+.pdf-fallback-note {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.pdf-fallback-note a {
+  color: var(--blue);
 }
 
 .doc-sections {
