@@ -6,6 +6,8 @@ const revealEls = [...document.querySelectorAll(".reveal")];
 const islandButtons = [...document.querySelectorAll(".project-island")];
 const cursorOrbit = document.querySelector(".cursor-orbit");
 const reactiveEls = [...document.querySelectorAll(".motion-reactive")];
+const heroCollage = document.querySelector(".hero-collage");
+const collagePieces = [...document.querySelectorAll(".collage-piece")];
 const skillTree = document.querySelector(".skill-tree");
 const skillWires = document.querySelector(".skill-wires");
 const skillNodes = [...document.querySelectorAll(".skill-node")];
@@ -320,6 +322,68 @@ function bindDraggableSkillCards() {
   });
 }
 
+function hasReadableTextBelow(piece, x, y) {
+  const previousPointerEvents = piece.style.pointerEvents;
+  piece.style.pointerEvents = "none";
+  const under = document.elementFromPoint(x, y);
+  piece.style.pointerEvents = previousPointerEvents;
+
+  if (!under || piece.contains(under)) return false;
+
+  const textHost = under.closest("h1, h2, h3, p, a, span, strong, small, b, .ascii-ghost, .blueprint-card");
+  return Boolean(textHost && textHost.textContent.trim().length > 0);
+}
+
+function bindDraggableCollagePieces() {
+  if (!heroCollage || window.matchMedia("(max-width: 980px)").matches) return;
+
+  collagePieces.forEach((piece) => {
+    piece.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      piece.setPointerCapture(event.pointerId);
+
+      const startX = event.clientX;
+      const startY = event.clientY;
+      const initialX = Number(piece.dataset.dragX || 0);
+      const initialY = Number(piece.dataset.dragY || 0);
+      const collageRect = heroCollage.getBoundingClientRect();
+      const pieceRect = piece.getBoundingClientRect();
+      const minX = collageRect.left - pieceRect.left - pieceRect.width * 0.38;
+      const maxX = collageRect.right - pieceRect.right + pieceRect.width * 0.38;
+      const minY = collageRect.top - pieceRect.top - pieceRect.height * 0.38;
+      const maxY = collageRect.bottom - pieceRect.bottom + pieceRect.height * 0.38;
+
+      piece.classList.add("is-dragging");
+
+      const movePiece = (moveEvent) => {
+        moveEvent.stopPropagation();
+        const nextX = Math.max(minX, Math.min(maxX, initialX + moveEvent.clientX - startX));
+        const nextY = Math.max(minY, Math.min(maxY, initialY + moveEvent.clientY - startY));
+        piece.dataset.dragX = String(nextX);
+        piece.dataset.dragY = String(nextY);
+        piece.style.setProperty("--piece-x", `${nextX}px`);
+        piece.style.setProperty("--piece-y", `${nextY}px`);
+        piece.classList.toggle("is-over-text", hasReadableTextBelow(piece, moveEvent.clientX, moveEvent.clientY));
+      };
+
+      const stopDrag = (stopEvent) => {
+        piece.classList.remove("is-dragging");
+        piece.classList.toggle("is-over-text", hasReadableTextBelow(piece, stopEvent.clientX, stopEvent.clientY));
+        piece.removeEventListener("pointermove", movePiece);
+        piece.removeEventListener("pointerup", stopDrag);
+        piece.removeEventListener("pointercancel", stopDrag);
+      };
+
+      piece.addEventListener("pointermove", movePiece);
+      piece.addEventListener("pointerup", stopDrag);
+      piece.addEventListener("pointercancel", stopDrag);
+    });
+  });
+}
+
 function bindMapTourist() {
   if (!mapBoard) return;
 
@@ -376,6 +440,7 @@ function init() {
   bindReactiveMotion();
   bindSkillTree();
   bindDraggableSkillCards();
+  bindDraggableCollagePieces();
   bindMapTourist();
   bindMailPopover();
   updateProgress();
