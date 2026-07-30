@@ -334,48 +334,68 @@ function hasReadableTextBelow(piece, x, y) {
   return Boolean(textHost && textHost.textContent.trim().length > 0);
 }
 
+function findCollagePieceAt(x, y) {
+  return [...document.querySelectorAll(".collage-piece")].reverse().find((piece) => {
+    const rect = piece.getBoundingClientRect();
+    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  });
+}
+
 function bindDraggableCollagePieces() {
   if (!heroCollage || window.matchMedia("(max-width: 980px)").matches) return;
 
-  collagePieces.forEach((piece) => {
-    piece.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
+  document.addEventListener("pointerdown", (event) => {
+    const piece = event.target.closest(".collage-piece") || findCollagePieceAt(event.clientX, event.clientY);
+    if (!piece || event.button !== 0) return;
+    if (!heroCollage.contains(piece) && !piece.classList.contains("is-floating")) return;
 
-      event.preventDefault();
-      event.stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
+    try {
       piece.setPointerCapture(event.pointerId);
+    } catch {
+      // Document-level move/up listeners below keep dragging stable when capture is unavailable.
+    }
 
-      const startX = event.clientX;
-      const startY = event.clientY;
-      const initialX = Number(piece.dataset.dragX || 0);
-      const initialY = Number(piece.dataset.dragY || 0);
+    if (!piece.classList.contains("is-floating")) {
+      const rect = piece.getBoundingClientRect();
+      piece.classList.add("is-floating", "is-positioned");
+      piece.style.setProperty("--float-left", `${rect.left}px`);
+      piece.style.setProperty("--float-top", `${rect.top}px`);
+      piece.dataset.dragX = "0";
+      piece.dataset.dragY = "0";
+    }
 
-      piece.classList.add("is-dragging", "is-positioned");
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const initialX = Number(piece.dataset.dragX || 0);
+    const initialY = Number(piece.dataset.dragY || 0);
 
-      const movePiece = (moveEvent) => {
-        moveEvent.stopPropagation();
-        const nextX = initialX + moveEvent.clientX - startX;
-        const nextY = initialY + moveEvent.clientY - startY;
-        piece.dataset.dragX = String(nextX);
-        piece.dataset.dragY = String(nextY);
-        piece.style.setProperty("--piece-x", `${nextX}px`);
-        piece.style.setProperty("--piece-y", `${nextY}px`);
-        piece.classList.toggle("is-over-text", hasReadableTextBelow(piece, moveEvent.clientX, moveEvent.clientY));
-      };
+    piece.classList.add("is-dragging", "is-positioned");
 
-      const stopDrag = (stopEvent) => {
-        piece.classList.remove("is-dragging");
-        piece.classList.toggle("is-over-text", hasReadableTextBelow(piece, stopEvent.clientX, stopEvent.clientY));
-        piece.removeEventListener("pointermove", movePiece);
-        piece.removeEventListener("pointerup", stopDrag);
-        piece.removeEventListener("pointercancel", stopDrag);
-      };
+    const movePiece = (moveEvent) => {
+      moveEvent.stopPropagation();
+      const nextX = initialX + moveEvent.clientX - startX;
+      const nextY = initialY + moveEvent.clientY - startY;
+      piece.dataset.dragX = String(nextX);
+      piece.dataset.dragY = String(nextY);
+      piece.style.setProperty("--piece-x", `${nextX}px`);
+      piece.style.setProperty("--piece-y", `${nextY}px`);
+      piece.classList.toggle("is-over-text", hasReadableTextBelow(piece, moveEvent.clientX, moveEvent.clientY));
+    };
 
-      piece.addEventListener("pointermove", movePiece);
-      piece.addEventListener("pointerup", stopDrag);
-      piece.addEventListener("pointercancel", stopDrag);
-    });
-  });
+    const stopDrag = (stopEvent) => {
+      piece.classList.remove("is-dragging");
+      piece.classList.toggle("is-over-text", hasReadableTextBelow(piece, stopEvent.clientX, stopEvent.clientY));
+      document.removeEventListener("pointermove", movePiece, true);
+      document.removeEventListener("pointerup", stopDrag, true);
+      document.removeEventListener("pointercancel", stopDrag, true);
+    };
+
+    document.addEventListener("pointermove", movePiece, true);
+    document.addEventListener("pointerup", stopDrag, true);
+    document.addEventListener("pointercancel", stopDrag, true);
+  }, true);
 }
 
 function bindMapTourist() {
