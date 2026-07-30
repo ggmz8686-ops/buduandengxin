@@ -155,25 +155,56 @@ function bindCursorOrbit() {
 function bindReactiveMotion() {
   reactiveEls.forEach((el) => {
     const strength = Number(el.dataset.reactiveStrength || 12);
+    const state = {
+      currentX: 0,
+      currentY: 0,
+      targetX: 0,
+      targetY: 0,
+      raf: 0,
+    };
+
+    const writeMotion = () => {
+      state.currentX += (state.targetX - state.currentX) * 0.09;
+      state.currentY += (state.targetY - state.currentY) * 0.09;
+
+      const active = Math.abs(state.currentX) + Math.abs(state.currentY) > 0.003;
+      el.classList.toggle("is-reacting", active);
+      el.style.setProperty("--rx", `${(state.currentX * strength).toFixed(2)}px`);
+      el.style.setProperty("--ry", `${(state.currentY * strength).toFixed(2)}px`);
+      el.style.setProperty("--mx", state.currentX.toFixed(3));
+      el.style.setProperty("--my", state.currentY.toFixed(3));
+
+      if (active || Math.abs(state.targetX) + Math.abs(state.targetY) > 0.003) {
+        state.raf = requestAnimationFrame(writeMotion);
+      } else {
+        state.currentX = 0;
+        state.currentY = 0;
+        el.style.setProperty("--rx", "0px");
+        el.style.setProperty("--ry", "0px");
+        el.style.setProperty("--mx", "0");
+        el.style.setProperty("--my", "0");
+        state.raf = 0;
+      }
+    };
+
+    const ensureMotion = () => {
+      if (!state.raf) state.raf = requestAnimationFrame(writeMotion);
+    };
 
     el.addEventListener("mousemove", (event) => {
       const rect = el.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-      el.classList.add("is-reacting");
-      el.style.setProperty("--rx", `${(x * strength).toFixed(2)}px`);
-      el.style.setProperty("--ry", `${(y * strength).toFixed(2)}px`);
-      el.style.setProperty("--mx", x.toFixed(3));
-      el.style.setProperty("--my", y.toFixed(3));
+      state.targetX = x;
+      state.targetY = y;
+      ensureMotion();
     });
 
     el.addEventListener("mouseleave", () => {
-      el.classList.remove("is-reacting");
-      el.style.setProperty("--rx", "0px");
-      el.style.setProperty("--ry", "0px");
-      el.style.setProperty("--mx", "0");
-      el.style.setProperty("--my", "0");
+      state.targetX = 0;
+      state.targetY = 0;
+      ensureMotion();
     });
   });
 }
