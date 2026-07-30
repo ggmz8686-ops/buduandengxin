@@ -580,6 +580,7 @@ h1 span::after {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
+  padding-top: 28px;
 }
 
 .profile-slice,
@@ -609,10 +610,10 @@ h1 span::after {
   transition: none;
 }
 
-.profile-slice:nth-child(1) { --stack-y: 38px; }
-.profile-slice:nth-child(2) { --stack-y: -58px; --tilt: 1.4deg; }
-.profile-slice:nth-child(3) { --stack-y: 52px; --tilt: -0.4deg; }
-.profile-slice:nth-child(4) { --stack-y: -36px; --tilt: 1deg; }
+.profile-slice:nth-child(1) { --stack-y: 30px; }
+.profile-slice:nth-child(2) { --stack-y: -18px; --tilt: 1.4deg; }
+.profile-slice:nth-child(3) { --stack-y: 34px; --tilt: -0.4deg; }
+.profile-slice:nth-child(4) { --stack-y: -12px; --tilt: 1deg; }
 
 .profile-slice:hover {
   --hover-x: var(--rx, 0px);
