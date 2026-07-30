@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>项目文档 | 王钰琪</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="doc-page">
+    <div class="paper-noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <nav class="top-nav" aria-label="文档导航">
+        <a href="./index.html#map">返回地图</a>
+        <a href="./index.html#skills">技能</a>
+        <a href="./index.html#contact">联系</a>
+      </nav>
+    </header>
+
+    <main class="project-doc" id="projectDoc">
+      <a class="back-link" href="./index.html#map">← 返回项目地图</a>
+      <section class="doc-hero">
+        <p class="eyebrow" id="docKicker">Project document</p>
+        <h1 id="docTitle">项目文档加载中</h1>
+        <p class="lead" id="docSummary"></p>
+      </section>
+
+      <section class="doc-index" aria-label="项目文档目录">
+        <p class="eyebrow">Document index</p>
+        <div class="doc-index-grid" id="docIndex"></div>
+      </section>
+
+      <section class="doc-preview" aria-label="源文件网页预览">
+        <div class="doc-preview-heading">
+          <p class="eyebrow">Source preview</p>
+          <h2>在网页里查看原始 PPT / Word</h2>
+        </div>
+        <iframe id="docFrame" title="项目源文件预览"></iframe>
+      </section>
+
+      <section class="doc-sections" id="docSections" aria-label="项目正文"></section>
+    </main>
+
+    <script src="./content.js"></script>
+    <script src="./project-doc.js"></script>
+  </body>
+</html>

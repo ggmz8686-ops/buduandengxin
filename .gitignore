@@ -1,0 +1,6 @@
+.screenshots/
+assets/docs/
+check-site.mjs
+*.inspect.ndjson
+.DS_Store
+Thumbs.db
