@@ -20,6 +20,7 @@ const contactTrigger = document.querySelector(".contact-trigger");
 const mailPopover = document.querySelector("#mailPopover");
 const mailClose = document.querySelector(".mail-close");
 const anchorLinks = [...document.querySelectorAll('a[href^="#"]')];
+const resetLayoutButton = document.querySelector(".reset-layout");
 
 const skillCopy = {
   ai: {
@@ -445,6 +446,35 @@ function bindDraggableCollagePieces() {
   }, true);
 }
 
+function resetMovableLayout() {
+  collagePieces.forEach((piece) => {
+    piece.classList.remove("is-floating", "is-positioned", "is-dragging", "is-over-text");
+    piece.style.removeProperty("--float-left");
+    piece.style.removeProperty("--float-top");
+    piece.style.removeProperty("--piece-x");
+    piece.style.removeProperty("--piece-y");
+    delete piece.dataset.floatLeft;
+    delete piece.dataset.floatTop;
+    delete piece.dataset.dragX;
+    delete piece.dataset.dragY;
+    if (heroCollage && piece.parentElement !== heroCollage) {
+      heroCollage.appendChild(piece);
+    }
+  });
+
+  profileSlices.forEach((card) => {
+    card.classList.remove("is-dragging");
+    card.style.removeProperty("--card-x");
+    card.style.removeProperty("--card-y");
+    delete card.dataset.dragX;
+    delete card.dataset.dragY;
+  });
+}
+
+function bindResetLayout() {
+  resetLayoutButton?.addEventListener("click", resetMovableLayout);
+}
+
 function bindMapTourist() {
   if (!mapBoard) return;
 
@@ -533,6 +563,7 @@ function init() {
   bindDraggableSkillCards();
   bindDraggableProfileSlices();
   bindDraggableCollagePieces();
+  bindResetLayout();
   bindMapTourist();
   bindMailPopover();
   updateProgress();

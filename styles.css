@@ -122,6 +122,36 @@ main,
   background: rgba(6, 63, 186, 0.08);
 }
 
+.reset-layout {
+  position: fixed;
+  left: 18px;
+  top: 18px;
+  z-index: 10000;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  transform: rotate(-1.5deg);
+  transition:
+    transform 160ms cubic-bezier(0.1, 1.2, 0.1, 1),
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.reset-layout:hover,
+.reset-layout:focus-visible {
+  background: var(--paper-2);
+  box-shadow: 2px 2px 0 var(--ink);
+  transform: translate(2px, 2px) rotate(0deg);
+  outline: 0;
+}
+
 .section-panel {
   width: min(1180px, calc(100vw - 48px));
   min-height: 100vh;
