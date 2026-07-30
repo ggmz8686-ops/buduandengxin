@@ -479,6 +479,8 @@ h1 span {
   padding: 24px;
   --tilt: -1deg;
   transition: transform 180ms ease, background 220ms ease, opacity 520ms ease;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .profile-slice:nth-child(2) { --tilt: 1.4deg; }
@@ -913,6 +915,10 @@ h1 span {
 
 .motion-reactive.is-reacting {
   --spin: calc((var(--mx) + var(--my)) * 5deg);
+  transition-property: opacity, background, box-shadow;
+  transition-duration: 180ms, 120ms, 120ms;
+  transition-timing-function: ease;
+  transition-delay: 0ms;
 }
 
 .skill-tree {
@@ -1076,8 +1082,8 @@ h1 span {
 .skill-node:hover,
 .skill-node.is-active,
 .skill-node:focus-visible {
-  --hover-x: -10px;
-  --hover-y: -5px;
+  --hover-x: calc(-10px + var(--rx, 0px));
+  --hover-y: calc(-5px + var(--ry, 0px));
   --tilt: 0deg;
   background: var(--paper-2);
   box-shadow: 12px 12px 0 var(--red);

@@ -160,7 +160,19 @@ function bindReactiveMotion() {
       currentY: 0,
       targetX: 0,
       targetY: 0,
+      rect: null,
       raf: 0,
+      active: false,
+    };
+
+    const setActive = (active) => {
+      if (state.active === active) return;
+      state.active = active;
+      el.classList.toggle("is-reacting", active);
+    };
+
+    const cacheRect = () => {
+      state.rect = el.getBoundingClientRect();
     };
 
     const writeMotion = () => {
@@ -168,7 +180,7 @@ function bindReactiveMotion() {
       state.currentY += (state.targetY - state.currentY) * 0.09;
 
       const active = Math.abs(state.currentX) + Math.abs(state.currentY) > 0.003;
-      el.classList.toggle("is-reacting", active);
+      setActive(active);
       el.style.setProperty("--rx", `${(state.currentX * strength).toFixed(2)}px`);
       el.style.setProperty("--ry", `${(state.currentY * strength).toFixed(2)}px`);
       el.style.setProperty("--mx", state.currentX.toFixed(3));
@@ -183,6 +195,7 @@ function bindReactiveMotion() {
         el.style.setProperty("--ry", "0px");
         el.style.setProperty("--mx", "0");
         el.style.setProperty("--my", "0");
+        setActive(false);
         state.raf = 0;
       }
     };
@@ -191,19 +204,22 @@ function bindReactiveMotion() {
       if (!state.raf) state.raf = requestAnimationFrame(writeMotion);
     };
 
-    el.addEventListener("mousemove", (event) => {
-      const rect = el.getBoundingClientRect();
+    el.addEventListener("pointerenter", cacheRect);
+
+    el.addEventListener("pointermove", (event) => {
+      const rect = state.rect || el.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-      state.targetX = x;
-      state.targetY = y;
+      state.targetX = Math.max(-0.5, Math.min(0.5, x));
+      state.targetY = Math.max(-0.5, Math.min(0.5, y));
       ensureMotion();
     });
 
-    el.addEventListener("mouseleave", () => {
+    el.addEventListener("pointerleave", () => {
       state.targetX = 0;
       state.targetY = 0;
+      state.rect = null;
       ensureMotion();
     });
   });
