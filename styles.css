@@ -298,7 +298,7 @@ h1 span::after {
 }
 
 .collage-piece.is-floating {
-  position: fixed;
+  position: absolute;
   left: var(--float-left, 0px);
   top: var(--float-top, 0px);
   right: auto;
@@ -520,12 +520,13 @@ h1 span::after {
   transform:
     translate(
       calc(var(--card-x, 0px) + var(--hover-x, 0px)),
-      calc(var(--card-y, 0px) + var(--hover-y, 42px))
+      calc(var(--card-y, 0px) + var(--stack-y, 0px) + var(--hover-y, 72px))
     )
-    rotate(var(--tilt, 0deg));
+    rotate(var(--tilt, 0deg))
+    scale(0.92);
   transition:
     opacity 520ms ease,
-    transform 620ms cubic-bezier(0.05, 0.88, 0.15, 1);
+    transform 860ms cubic-bezier(0.16, 1.18, 0.22, 1);
 }
 
 .section-heading h2 {
@@ -544,9 +545,10 @@ h1 span::after {
   transform:
     translate(
       calc(var(--card-x, 0px) + var(--hover-x, 0px)),
-      calc(var(--card-y, 0px) + var(--hover-y, 0px))
+      calc(var(--card-y, 0px) + var(--stack-y, 0px) + var(--hover-y, 0px))
     )
-    rotate(var(--tilt, 0deg));
+    rotate(var(--tilt, 0deg))
+    scale(1);
 }
 
 .reveal.is-visible .profile-slice:nth-child(2),
@@ -590,6 +592,7 @@ h1 span::after {
 .profile-slice {
   min-height: 270px;
   padding: 24px;
+  --stack-y: 0px;
   --tilt: -1deg;
   transition: transform 180ms ease, background 220ms ease, opacity 520ms ease;
   will-change: transform;
@@ -606,9 +609,10 @@ h1 span::after {
   transition: none;
 }
 
-.profile-slice:nth-child(2) { --tilt: 1.4deg; }
-.profile-slice:nth-child(3) { --tilt: -0.4deg; }
-.profile-slice:nth-child(4) { --tilt: 1deg; }
+.profile-slice:nth-child(1) { --stack-y: 38px; }
+.profile-slice:nth-child(2) { --stack-y: -58px; --tilt: 1.4deg; }
+.profile-slice:nth-child(3) { --stack-y: 52px; --tilt: -0.4deg; }
+.profile-slice:nth-child(4) { --stack-y: -36px; --tilt: 1deg; }
 
 .profile-slice:hover {
   --hover-x: var(--rx, 0px);
@@ -1714,13 +1718,15 @@ h1 span::after {
 
 .reveal {
   opacity: 0;
-  transform: translateY(36px);
-  transition: opacity 700ms ease, transform 700ms ease;
+  transform: translateY(76px) scale(0.965);
+  transition:
+    opacity 760ms ease,
+    transform 940ms cubic-bezier(0.16, 1.08, 0.22, 1);
 }
 
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 @keyframes pulseSun {
@@ -1807,6 +1813,7 @@ h1 span::after {
 
   .profile-slice {
     min-height: auto;
+    --stack-y: 0px;
   }
 
   .skill-tree {

@@ -402,10 +402,12 @@ function bindDraggableCollagePieces() {
     if (!piece.classList.contains("is-floating")) {
       const rect = piece.getBoundingClientRect();
       piece.classList.add("is-floating", "is-positioned");
-      piece.style.setProperty("--float-left", `${rect.left}px`);
-      piece.style.setProperty("--float-top", `${rect.top}px`);
-      piece.dataset.floatLeft = String(rect.left);
-      piece.dataset.floatTop = String(rect.top);
+      const floatLeft = rect.left + window.scrollX;
+      const floatTop = rect.top + window.scrollY;
+      piece.style.setProperty("--float-left", `${floatLeft}px`);
+      piece.style.setProperty("--float-top", `${floatTop}px`);
+      piece.dataset.floatLeft = String(floatLeft);
+      piece.dataset.floatTop = String(floatTop);
       piece.dataset.dragX = "0";
       piece.dataset.dragY = "0";
       document.body.appendChild(piece);
