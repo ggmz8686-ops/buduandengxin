@@ -40,7 +40,13 @@
           <span id="pdfStatus">正在把文档铺开...</span>
           <a id="pdfFallback" href="#" target="_blank" rel="noreferrer">打开 PDF</a>
         </div>
-        <div class="pdf-viewer" id="pdfViewer" aria-live="polite"></div>
+        <div class="pdf-reader">
+          <aside class="pdf-page-nav" aria-label="PDF 页码目录">
+            <b>PDF 目录</b>
+            <div id="pdfPageNav"></div>
+          </aside>
+          <div class="pdf-viewer" id="pdfViewer" aria-live="polite"></div>
+        </div>
       </section>
 
       <section class="doc-sections" id="docSections" aria-label="项目正文"></section>

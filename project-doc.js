@@ -10,6 +10,7 @@ const docNotice = document.querySelector("#docNotice");
 const docIndex = document.querySelector("#docIndex");
 const docSections = document.querySelector("#docSections");
 const pdfViewer = document.querySelector("#pdfViewer");
+const pdfPageNav = document.querySelector("#pdfPageNav");
 const pdfStatus = document.querySelector("#pdfStatus");
 const pdfFallback = document.querySelector("#pdfFallback");
 
@@ -79,6 +80,7 @@ async function renderPdf(previewUrl) {
   if (!pdfViewer || !pdfStatus) return;
 
   pdfViewer.replaceChildren();
+  pdfPageNav?.replaceChildren();
   pdfStatus.textContent = "正在用 PDF.js 加载文档...";
 
   const pdfjsLib = window.pdfjsLib;
@@ -100,6 +102,7 @@ async function renderPdf(previewUrl) {
     }
 
     pdfStatus.textContent = `已用 PDF.js 渲染 ${pdf.numPages} 页`;
+    setActivePdfPage(1);
     appendFallbackNote(previewUrl);
   } catch (error) {
     console.error("PDF render failed", error);
@@ -117,6 +120,7 @@ async function renderPdfPage(pdf, pageNumber) {
 
   const frame = document.createElement("article");
   frame.className = "pdf-page";
+  frame.id = `pdf-page-${pageNumber}`;
 
   const label = document.createElement("span");
   label.textContent = `${String(pageNumber).padStart(2, "0")} / ${String(pdf.numPages).padStart(2, "0")}`;
@@ -131,8 +135,37 @@ async function renderPdfPage(pdf, pageNumber) {
 
   frame.append(label, canvas);
   pdfViewer.appendChild(frame);
+  appendPdfPageNavItem(pageNumber);
 
   await page.render({ canvasContext: context, viewport }).promise;
+}
+
+function appendPdfPageNavItem(pageNumber) {
+  if (!pdfPageNav) return;
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "pdf-page-nav-item";
+  button.dataset.page = String(pageNumber);
+  button.textContent = `P${String(pageNumber).padStart(2, "0")}`;
+  button.addEventListener("click", () => {
+    const page = document.querySelector(`#pdf-page-${pageNumber}`);
+    if (!page || !pdfViewer) return;
+    pdfViewer.scrollTo({
+      top: page.offsetTop - 12,
+      behavior: "smooth",
+    });
+    setActivePdfPage(pageNumber);
+  });
+
+  pdfPageNav.appendChild(button);
+}
+
+function setActivePdfPage(pageNumber) {
+  if (!pdfPageNav) return;
+  pdfPageNav.querySelectorAll(".pdf-page-nav-item").forEach((item) => {
+    item.classList.toggle("is-active", item.dataset.page === String(pageNumber));
+  });
 }
 
 function appendFallbackNote(previewUrl) {
@@ -144,6 +177,7 @@ function appendFallbackNote(previewUrl) {
 
 function renderPdfError(previewUrl, message) {
   pdfViewer.replaceChildren();
+  pdfPageNav?.replaceChildren();
   pdfStatus.textContent = "PDF.js 渲染未完成";
 
   const errorCard = document.createElement("div");
@@ -158,3 +192,11 @@ function renderPdfError(previewUrl, message) {
 function nextFrame() {
   return new Promise((resolve) => requestAnimationFrame(resolve));
 }
+
+pdfViewer?.addEventListener("scroll", () => {
+  const pages = Array.from(pdfViewer.querySelectorAll(".pdf-page"));
+  const currentPage = pages.findLast((page) => page.offsetTop - pdfViewer.scrollTop < pdfViewer.clientHeight * 0.35);
+  if (!currentPage) return;
+  const pageNumber = Number(currentPage.id.replace("pdf-page-", ""));
+  if (Number.isFinite(pageNumber)) setActivePdfPage(pageNumber);
+});
