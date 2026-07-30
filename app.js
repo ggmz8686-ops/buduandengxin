@@ -8,6 +8,7 @@ const cursorOrbit = document.querySelector(".cursor-orbit");
 const reactiveEls = [...document.querySelectorAll(".motion-reactive")];
 const heroCollage = document.querySelector(".hero-collage");
 const collagePieces = [...document.querySelectorAll(".collage-piece")];
+const profileSlices = [...document.querySelectorAll(".profile-slice")];
 const skillTree = document.querySelector(".skill-tree");
 const skillWires = document.querySelector(".skill-wires");
 const skillNodes = [...document.querySelectorAll(".skill-node")];
@@ -322,6 +323,47 @@ function bindDraggableSkillCards() {
   });
 }
 
+function bindDraggableProfileSlices() {
+  if (window.matchMedia("(max-width: 980px)").matches) return;
+
+  profileSlices.forEach((card) => {
+    card.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      card.setPointerCapture(event.pointerId);
+
+      const startX = event.clientX;
+      const startY = event.clientY;
+      const initialX = Number(card.dataset.dragX || 0);
+      const initialY = Number(card.dataset.dragY || 0);
+
+      card.classList.add("is-dragging");
+
+      const moveCard = (moveEvent) => {
+        const nextX = initialX + moveEvent.clientX - startX;
+        const nextY = initialY + moveEvent.clientY - startY;
+        card.dataset.dragX = String(nextX);
+        card.dataset.dragY = String(nextY);
+        card.style.setProperty("--card-x", `${nextX}px`);
+        card.style.setProperty("--card-y", `${nextY}px`);
+      };
+
+      const stopDrag = () => {
+        card.classList.remove("is-dragging");
+        card.removeEventListener("pointermove", moveCard);
+        card.removeEventListener("pointerup", stopDrag);
+        card.removeEventListener("pointercancel", stopDrag);
+      };
+
+      card.addEventListener("pointermove", moveCard);
+      card.addEventListener("pointerup", stopDrag);
+      card.addEventListener("pointercancel", stopDrag);
+    });
+  });
+}
+
 function hasReadableTextBelow(piece, x, y) {
   const previousPointerEvents = piece.style.pointerEvents;
   piece.style.pointerEvents = "none";
@@ -362,25 +404,28 @@ function bindDraggableCollagePieces() {
       piece.classList.add("is-floating", "is-positioned");
       piece.style.setProperty("--float-left", `${rect.left}px`);
       piece.style.setProperty("--float-top", `${rect.top}px`);
+      piece.dataset.floatLeft = String(rect.left);
+      piece.dataset.floatTop = String(rect.top);
       piece.dataset.dragX = "0";
       piece.dataset.dragY = "0";
+      document.body.appendChild(piece);
     }
 
     const startX = event.clientX;
     const startY = event.clientY;
-    const initialX = Number(piece.dataset.dragX || 0);
-    const initialY = Number(piece.dataset.dragY || 0);
+    const initialLeft = Number(piece.dataset.floatLeft || 0);
+    const initialTop = Number(piece.dataset.floatTop || 0);
 
     piece.classList.add("is-dragging", "is-positioned");
 
     const movePiece = (moveEvent) => {
       moveEvent.stopPropagation();
-      const nextX = initialX + moveEvent.clientX - startX;
-      const nextY = initialY + moveEvent.clientY - startY;
-      piece.dataset.dragX = String(nextX);
-      piece.dataset.dragY = String(nextY);
-      piece.style.setProperty("--piece-x", `${nextX}px`);
-      piece.style.setProperty("--piece-y", `${nextY}px`);
+      const nextLeft = initialLeft + moveEvent.clientX - startX;
+      const nextTop = initialTop + moveEvent.clientY - startY;
+      piece.dataset.floatLeft = String(nextLeft);
+      piece.dataset.floatTop = String(nextTop);
+      piece.style.setProperty("--float-left", `${nextLeft}px`);
+      piece.style.setProperty("--float-top", `${nextTop}px`);
       piece.classList.toggle("is-over-text", hasReadableTextBelow(piece, moveEvent.clientX, moveEvent.clientY));
     };
 
@@ -484,6 +529,7 @@ function init() {
   bindReactiveMotion();
   bindSkillTree();
   bindDraggableSkillCards();
+  bindDraggableProfileSlices();
   bindDraggableCollagePieces();
   bindMapTourist();
   bindMailPopover();

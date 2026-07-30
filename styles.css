@@ -594,6 +594,16 @@ h1 span::after {
   transition: transform 180ms ease, background 220ms ease, opacity 520ms ease;
   will-change: transform;
   backface-visibility: hidden;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  z-index: 1;
+}
+
+.profile-slice.is-dragging {
+  cursor: grabbing;
+  z-index: 12;
+  transition: none;
 }
 
 .profile-slice:nth-child(2) { --tilt: 1.4deg; }
