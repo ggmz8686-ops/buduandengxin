@@ -179,14 +179,14 @@ h1 span {
 h1 span::after {
   content: "";
   position: absolute;
-  left: clamp(5.8rem, 12.5vw, 11.2rem);
-  bottom: -0.16em;
-  width: clamp(118px, 18vw, 218px);
+  left: clamp(8.6rem, 16vw, 14.8rem);
+  top: 0.86em;
+  width: clamp(150px, 16vw, 230px);
   height: 9px;
   background: var(--red);
   box-shadow:
     7px 7px 0 rgba(16, 17, 22, 0.9),
-    0 13px 0 rgba(255, 196, 46, 0.72);
+    0 10px 0 rgba(255, 196, 46, 0.72);
   transform: skewX(-12deg) rotate(-1.2deg);
   pointer-events: none;
 }
@@ -280,10 +280,18 @@ h1 span::after {
 .collage-piece {
   --piece-x: 0px;
   --piece-y: 0px;
+  --piece-mx: var(--mx);
+  --piece-my: var(--my);
   cursor: grab;
   touch-action: none;
   user-select: none;
   will-change: transform, translate;
+}
+
+.collage-piece.is-positioned,
+.collage-piece.is-dragging {
+  --piece-mx: 0;
+  --piece-my: 0;
 }
 
 .collage-piece.is-dragging {
@@ -305,11 +313,11 @@ h1 span::after {
   font-size: 12px;
   transform:
     translateZ(44px)
-    rotate(calc(2.5deg + var(--mx) * -5deg))
-    skewY(calc(var(--my) * 2deg));
+    rotate(calc(2.5deg + var(--piece-mx) * -5deg))
+    skewY(calc(var(--piece-my) * 2deg));
   translate:
-    calc(var(--piece-x, 0px) + var(--mx) * -34px)
-    calc(var(--piece-y, 0px) + var(--my) * 20px);
+    calc(var(--piece-x, 0px) + var(--piece-mx) * -34px)
+    calc(var(--piece-y, 0px) + var(--piece-my) * 20px);
   transition:
     transform 620ms cubic-bezier(0.18, 0.9, 0.18, 1),
     translate 620ms cubic-bezier(0.18, 0.9, 0.18, 1);
@@ -332,10 +340,10 @@ h1 span::after {
   height: 360px;
   transform:
     translate(
-      calc(var(--piece-x, 0px) + var(--mx) * 18px),
-      calc(var(--piece-y, 0px) + var(--my) * -12px)
+      calc(var(--piece-x, 0px) + var(--piece-mx) * 18px),
+      calc(var(--piece-y, 0px) + var(--piece-my) * -12px)
     )
-    rotate(calc(var(--mx) * 4deg));
+    rotate(calc(var(--piece-mx) * 4deg));
   transition: transform 680ms cubic-bezier(0.18, 0.9, 0.18, 1);
 }
 
@@ -350,8 +358,8 @@ h1 span::after {
   filter: url("#none");
   animation: pulseSun 2.8s steps(2) infinite;
   transform:
-    translate(calc(var(--mx) * -24px), calc(var(--my) * -22px))
-    rotate(calc(var(--mx) * -12deg));
+    translate(calc(var(--piece-mx) * -24px), calc(var(--piece-my) * -22px))
+    rotate(calc(var(--piece-mx) * -12deg));
   transition: transform 720ms cubic-bezier(0.18, 0.9, 0.18, 1);
 }
 
@@ -371,8 +379,8 @@ h1 span::after {
     linear-gradient(90deg, #111 0 45%, #f5f1e9 45% 62%, #111 62%);
   clip-path: polygon(22% 0, 82% 2%, 74% 42%, 92% 100%, 54% 100%, 46% 45%, 35% 100%, 0 100%, 22% 44%);
   transform:
-    translate(calc(var(--mx) * 12px), calc(var(--my) * 24px))
-    skewX(calc(-7deg + var(--mx) * 8deg));
+    translate(calc(var(--piece-mx) * 12px), calc(var(--piece-my) * 24px))
+    skewX(calc(-7deg + var(--piece-mx) * 8deg));
   transition: transform 700ms cubic-bezier(0.18, 0.9, 0.18, 1);
 }
 
@@ -388,11 +396,11 @@ h1 span::after {
   mix-blend-mode: multiply;
   transform:
     translate(
-      calc(var(--piece-x, 0px) + var(--mx) * 38px),
-      calc(var(--piece-y, 0px) + var(--my) * -24px)
+      calc(var(--piece-x, 0px) + var(--piece-mx) * 38px),
+      calc(var(--piece-y, 0px) + var(--piece-my) * -24px)
     )
-    skewX(calc(-8deg + var(--mx) * -6deg))
-    rotate(calc(var(--mx) * 6deg));
+    skewX(calc(-8deg + var(--piece-mx) * -6deg))
+    rotate(calc(var(--piece-mx) * 6deg));
   transition: transform 660ms cubic-bezier(0.18, 0.9, 0.18, 1);
 }
 
@@ -408,11 +416,11 @@ h1 span::after {
   opacity: 0.72;
   transform:
     translate(
-      calc(var(--piece-x, 0px) + var(--mx) * 54px),
-      calc(var(--piece-y, 0px) + var(--my) * -34px)
+      calc(var(--piece-x, 0px) + var(--piece-mx) * 54px),
+      calc(var(--piece-y, 0px) + var(--piece-my) * -34px)
     )
-    rotate(calc(var(--mx) * 18deg))
-    scale(calc(1.1 + (var(--my) * -0.04)));
+    rotate(calc(var(--piece-mx) * 18deg))
+    scale(calc(1.1 + (var(--piece-my) * -0.04)));
   transition: transform 760ms cubic-bezier(0.18, 0.9, 0.18, 1);
   animation: rippleFloat 2.4s ease-in-out infinite;
 }
@@ -429,10 +437,10 @@ h1 span::after {
   opacity: 0.34;
   transform:
     translate(
-      calc(var(--piece-x, 0px) + var(--mx) * -28px),
-      calc(var(--piece-y, 0px) + var(--my) * -30px)
+      calc(var(--piece-x, 0px) + var(--piece-mx) * -28px),
+      calc(var(--piece-y, 0px) + var(--piece-my) * -30px)
     )
-    rotate(calc(-5deg + var(--mx) * -7deg));
+    rotate(calc(-5deg + var(--piece-mx) * -7deg));
   transition: transform 700ms cubic-bezier(0.18, 0.9, 0.18, 1);
 }
 

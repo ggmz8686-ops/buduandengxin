@@ -349,19 +349,13 @@ function bindDraggableCollagePieces() {
       const startY = event.clientY;
       const initialX = Number(piece.dataset.dragX || 0);
       const initialY = Number(piece.dataset.dragY || 0);
-      const collageRect = heroCollage.getBoundingClientRect();
-      const pieceRect = piece.getBoundingClientRect();
-      const minX = collageRect.left - pieceRect.left - pieceRect.width * 0.38;
-      const maxX = collageRect.right - pieceRect.right + pieceRect.width * 0.38;
-      const minY = collageRect.top - pieceRect.top - pieceRect.height * 0.38;
-      const maxY = collageRect.bottom - pieceRect.bottom + pieceRect.height * 0.38;
 
-      piece.classList.add("is-dragging");
+      piece.classList.add("is-dragging", "is-positioned");
 
       const movePiece = (moveEvent) => {
         moveEvent.stopPropagation();
-        const nextX = Math.max(minX, Math.min(maxX, initialX + moveEvent.clientX - startX));
-        const nextY = Math.max(minY, Math.min(maxY, initialY + moveEvent.clientY - startY));
+        const nextX = initialX + moveEvent.clientX - startX;
+        const nextY = initialY + moveEvent.clientY - startY;
         piece.dataset.dragX = String(nextX);
         piece.dataset.dragY = String(nextY);
         piece.style.setProperty("--piece-x", `${nextX}px`);
