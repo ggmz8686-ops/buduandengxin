@@ -14,6 +14,7 @@ const pdfPageNav = document.querySelector("#pdfPageNav");
 const pdfStatus = document.querySelector("#pdfStatus");
 const pdfFallback = document.querySelector("#pdfFallback");
 const previewTitle = document.querySelector("#previewTitle");
+const previewNavTitle = document.querySelector("#previewNavTitle");
 
 const pdfJsVersion = "2.16.105";
 const pdfWorkerUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfJsVersion}/pdf.worker.min.js`;
@@ -28,7 +29,7 @@ const previewFiles = {
 const interactivePreviews = {
   timetable: {
     title: "操作校园时间管理 App MVP",
-    url: "./timetable-ios/",
+    url: "./timetable-ios/index.html",
     status: "这是可交互网页预览，不是 PDF。可以直接点击、切换、新建和编辑课程。",
     cta: "新窗口打开 App",
     navTitle: "交互入口",
@@ -57,10 +58,12 @@ function renderDocument() {
   const interactivePreview = interactivePreviews[projectId];
   if (interactivePreview) {
     previewTitle.textContent = interactivePreview.title;
+    previewNavTitle.textContent = interactivePreview.navTitle;
     pdfFallback.href = interactivePreview.url;
     pdfFallback.textContent = interactivePreview.cta;
   } else {
     previewTitle.textContent = "在网页里查看原始 PPT / Word";
+    previewNavTitle.textContent = "PDF 目录";
     pdfFallback.href = previewUrl;
     pdfFallback.textContent = "打开 PDF";
   }
@@ -109,15 +112,13 @@ function renderInteractivePreview(preview) {
   pdfStatus.textContent = preview.status;
 
   if (pdfPageNav) {
-    const title = document.createElement("b");
-    title.textContent = preview.navTitle;
     const launch = document.createElement("a");
     launch.className = "interactive-nav-link";
     launch.href = preview.url;
     launch.target = "_blank";
     launch.rel = "noreferrer";
     launch.textContent = "打开";
-    pdfPageNav.append(title, launch);
+    pdfPageNav.append(launch);
   }
 
   const shell = document.createElement("div");
