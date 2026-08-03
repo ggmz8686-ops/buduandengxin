@@ -13,6 +13,7 @@ const pdfViewer = document.querySelector("#pdfViewer");
 const pdfPageNav = document.querySelector("#pdfPageNav");
 const pdfStatus = document.querySelector("#pdfStatus");
 const pdfFallback = document.querySelector("#pdfFallback");
+const previewTitle = document.querySelector("#previewTitle");
 
 const pdfJsVersion = "2.16.105";
 const pdfWorkerUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfJsVersion}/pdf.worker.min.js`;
@@ -22,7 +23,16 @@ const previewFiles = {
   casebook: "./assets/previews/casebook-source.pdf",
   lineage: "./assets/previews/lineage-source.pdf",
   kansei: "./assets/previews/kansei-source.pdf",
-  timetable: "./assets/previews/timetable-source.pdf",
+};
+
+const interactivePreviews = {
+  timetable: {
+    title: "操作校园时间管理 App MVP",
+    url: "./timetable-ios/",
+    status: "这是可交互网页预览，不是 PDF。可以直接点击、切换、新建和编辑课程。",
+    cta: "新窗口打开 App",
+    navTitle: "交互入口",
+  },
 };
 
 const protectedProjects = new Set(["casebook", "lineage"]);
@@ -44,7 +54,17 @@ function renderDocument() {
     docNotice.textContent = "";
   }
 
-  pdfFallback.href = previewUrl;
+  const interactivePreview = interactivePreviews[projectId];
+  if (interactivePreview) {
+    previewTitle.textContent = interactivePreview.title;
+    pdfFallback.href = interactivePreview.url;
+    pdfFallback.textContent = interactivePreview.cta;
+  } else {
+    previewTitle.textContent = "在网页里查看原始 PPT / Word";
+    pdfFallback.href = previewUrl;
+    pdfFallback.textContent = "打开 PDF";
+  }
+
   docIndex.replaceChildren();
   docSections.replaceChildren();
 
@@ -72,10 +92,54 @@ function renderDocument() {
     docSections.appendChild(section);
   });
 
-  renderPdf(previewUrl);
+  if (interactivePreview) {
+    renderInteractivePreview(interactivePreview);
+  } else {
+    renderPdf(previewUrl);
+  }
 }
 
 renderDocument();
+
+function renderInteractivePreview(preview) {
+  if (!pdfViewer || !pdfStatus) return;
+
+  pdfViewer.replaceChildren();
+  pdfPageNav?.replaceChildren();
+  pdfStatus.textContent = preview.status;
+
+  if (pdfPageNav) {
+    const title = document.createElement("b");
+    title.textContent = preview.navTitle;
+    const launch = document.createElement("a");
+    launch.className = "interactive-nav-link";
+    launch.href = preview.url;
+    launch.target = "_blank";
+    launch.rel = "noreferrer";
+    launch.textContent = "打开";
+    pdfPageNav.append(title, launch);
+  }
+
+  const shell = document.createElement("div");
+  shell.className = "interactive-preview-shell";
+
+  const device = document.createElement("div");
+  device.className = "interactive-device";
+
+  const iframe = document.createElement("iframe");
+  iframe.className = "interactive-frame";
+  iframe.src = preview.url;
+  iframe.title = `${project.title} 可交互预览`;
+  iframe.loading = "eager";
+
+  const note = document.createElement("p");
+  note.className = "interactive-preview-note";
+  note.innerHTML = `如果嵌入区域太小，可以 <a href="${preview.url}" target="_blank" rel="noreferrer">新窗口打开完整 App</a>。`;
+
+  device.appendChild(iframe);
+  shell.append(device, note);
+  pdfViewer.appendChild(shell);
+}
 
 async function renderPdf(previewUrl) {
   if (!pdfViewer || !pdfStatus) return;
