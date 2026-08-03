@@ -107,6 +107,19 @@ button {
   font-size: 12px;
 }
 
+.launch-note {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 2px solid #000;
+  border-radius: 7px;
+  background: var(--lime);
+  color: #111;
+  box-shadow: 5px 5px 0 #000;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
 .screen-tabs {
   display: grid;
   gap: 8px;
