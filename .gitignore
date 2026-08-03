@@ -3,5 +3,6 @@
 assets/docs/
 check-site.mjs
 *.inspect.ndjson
+.server.*
 .DS_Store
 Thumbs.db

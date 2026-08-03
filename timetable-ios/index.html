@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fun Card App Preview</title>
+    <meta name="description" content="Local web preview of AleFoxhorn/timetable-ios app screens.">
+    <link rel="icon" href="./assets/app-icon.png">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="preview-shell">
+      <aside class="control-panel" aria-label="页面切换">
+        <div class="brand">
+          <img src="./assets/app-icon.png" alt="">
+          <div>
+            <p>Fun Card</p>
+            <span>timetable-ios local preview</span>
+          </div>
+        </div>
+        <nav class="screen-tabs" id="screenTabs" aria-label="App 页面">
+          <button type="button" data-screen="schedule" class="active">正式课表</button>
+          <button type="button" data-screen="events">事项模式</button>
+          <button type="button" data-screen="blank">空白课表</button>
+          <button type="button" data-screen="select">选择第一周</button>
+          <button type="button" data-screen="preview">学期预览</button>
+          <button type="button" data-screen="course-form">新建课程</button>
+        </nav>
+        <div class="source-note">
+          <span>Source</span>
+          <strong>470bb149</strong>
+        </div>
+      </aside>
+
+      <section class="phone-wrap" aria-label="iPhone 预览">
+        <div class="phone">
+          <div class="status-bar" aria-hidden="true">
+            <span>9:41</span>
+            <span class="status-icons">▥ ◇ ▰</span>
+          </div>
+          <div id="app" class="app-screen"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

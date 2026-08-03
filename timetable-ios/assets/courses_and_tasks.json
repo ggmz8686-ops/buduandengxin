@@ -1,0 +1,47 @@
+[
+  {
+    "id": "B0B53F65-E792-4EC2-9D67-9F06DBA6A001",
+    "name": "思想政治",
+    "locationRaw": "第二教学楼 3-315",
+    "location": "第二教学楼",
+    "classroom": "3-315",
+    "teacher": "陈老师",
+    "weekday": 1,
+    "startSlot": 1,
+    "endSlot": 2,
+    "weeks": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    "weekPattern": "every",
+    "status": "complete",
+    "tasks": ["建模初稿提交", "改方案", "草图提交"]
+  },
+  {
+    "id": "B0B53F65-E792-4EC2-9D67-9F06DBA6A002",
+    "name": "视觉设计",
+    "locationRaw": "艺术楼 A-201",
+    "location": "艺术楼",
+    "classroom": "A-201",
+    "teacher": "李老师",
+    "weekday": 2,
+    "startSlot": 1,
+    "endSlot": 4,
+    "weeks": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    "weekPattern": "every",
+    "status": "complete",
+    "tasks": []
+  },
+  {
+    "id": "B0B53F65-E792-4EC2-9D67-9F06DBA6A003",
+    "name": "高等数学",
+    "locationRaw": "B-208",
+    "location": "",
+    "classroom": "B-208",
+    "teacher": "王老师",
+    "weekday": 3,
+    "startSlot": 1,
+    "endSlot": 2,
+    "weeks": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    "weekPattern": "every",
+    "status": "complete",
+    "tasks": ["作业第三章"]
+  }
+]

@@ -22,6 +22,7 @@ const previewFiles = {
   casebook: "./assets/previews/casebook-source.pdf",
   lineage: "./assets/previews/lineage-source.pdf",
   kansei: "./assets/previews/kansei-source.pdf",
+  timetable: "./assets/previews/timetable-source.pdf",
 };
 
 const protectedProjects = new Set(["casebook", "lineage"]);

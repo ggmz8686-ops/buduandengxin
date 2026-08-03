@@ -600,6 +600,10 @@ h1 span::after {
   transition-delay: 270ms;
 }
 
+.reveal.is-visible .project-island:nth-of-type(5) {
+  transition-delay: 350ms;
+}
+
 .section-heading h2 {
   margin: 0;
   font-size: clamp(2rem, 4.2vw, 4rem);
@@ -678,7 +682,7 @@ h1 span::after {
 
 .map-board {
   position: relative;
-  min-height: 700px;
+  min-height: 820px;
   border: 2px solid rgba(16, 17, 22, 0.18);
   background:
     radial-gradient(ellipse at 30% 34%, rgba(142, 202, 230, 0.28), transparent 13rem),
@@ -698,9 +702,21 @@ h1 span::after {
   width: 100%;
   height: 100%;
   fill: none;
-  stroke: rgba(6, 63, 186, 0.38);
-  stroke-width: 3;
-  stroke-dasharray: 10 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.map-route-main {
+  stroke: rgba(6, 63, 186, 0.32);
+  stroke-width: 3.2;
+  stroke-dasharray: 9 16;
+}
+
+.map-route-echo {
+  stroke: rgba(6, 63, 186, 0.18);
+  stroke-width: 2.2;
+  stroke-dasharray: 8 18;
 }
 
 .map-tourist {
@@ -1049,13 +1065,48 @@ h1 span::after {
   --house-top: 62px;
 }
 
+.island-timetable {
+  left: 13%;
+  top: 65%;
+  --base-rotate: -2deg;
+  --tilt: var(--base-rotate);
+  --island-shape: polygon(8% 22%, 28% 4%, 70% 0, 96% 26%, 92% 72%, 58% 100%, 18% 88%, 0 54%);
+  --hill-left: 56px;
+  --hill-top: 54px;
+  --hill-width: 98px;
+  --hill-height: 70px;
+  --hill-shape: polygon(0 100%, 22% 40%, 48% 10%, 80% 44%, 100% 100%);
+  --house-right: 48px;
+  --house-top: 58px;
+}
+
+.island-timetable .island-land {
+  background:
+    linear-gradient(90deg, transparent 0 46%, rgba(255, 255, 255, 0.42) 47% 53%, transparent 54%),
+    linear-gradient(0deg, transparent 0 52%, rgba(6, 63, 186, 0.16) 53% 57%, transparent 58%),
+    radial-gradient(circle at 24% 24%, rgba(255, 196, 46, 0.3), transparent 18%),
+    repeating-linear-gradient(0deg, rgba(16, 17, 22, 0.06) 0 2px, transparent 2px 12px),
+    linear-gradient(150deg, #fcf7e9 0 26%, #d9effb 42%, #bfd7dd 70%, #93a7a8 100%);
+}
+
+.island-timetable .island-house {
+  box-shadow:
+    6px 7px 0 var(--blue),
+    9px 10px 0 rgba(16, 17, 22, 0.24);
+}
+
+.island-timetable .island-house::before {
+  background: var(--yellow);
+}
+
 .map-hint {
   position: absolute;
-  left: 44px;
+  left: auto;
+  right: 44px;
   bottom: 34px;
   display: grid;
   gap: 6px;
-  width: min(280px, calc(100% - 88px));
+  width: min(230px, calc(100% - 88px));
   padding: 16px 18px;
   border: 2px solid var(--ink);
   border-left: 7px solid var(--red);
@@ -1985,7 +2036,7 @@ h1 span::after {
   .node-base { --mobile-tilt: -0.8deg; }
 
   .map-board {
-    min-height: 940px;
+    min-height: 1160px;
   }
 
   .project-island {
@@ -2017,8 +2068,15 @@ h1 span::after {
     top: 610px;
   }
 
+  .island-timetable {
+    left: 24px !important;
+    right: auto !important;
+    top: 820px;
+  }
+
   .map-hint {
     left: 26px;
+    right: auto;
     bottom: 24px;
     width: calc(100% - 52px);
   }

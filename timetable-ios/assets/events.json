@@ -1,0 +1,46 @@
+[
+  {
+    "date": "2026-06-10T00:00:00Z",
+    "endTime": "11:40",
+    "id": "C1C64A1E-5C10-4A5F-8A3D-5F88E5C1A001",
+    "location": "",
+    "notes": "",
+    "repeatRule": "none",
+    "startTime": "10:05",
+    "title": "打卡",
+    "weeks": [
+      15
+    ]
+  },
+  {
+    "date": "2026-06-09T00:00:00Z",
+    "endTime": "10:30",
+    "id": "C1C64A1E-5C10-4A5F-8A3D-5F88E5C1A002",
+    "location": "第二教学馆305",
+    "notes": "",
+    "repeatRule": "weekly",
+    "startTime": "09:30",
+    "title": "晨会",
+    "weeks": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ]
+  },
+  {
+    "date": "2026-06-12T00:00:00Z",
+    "endTime": "13:00",
+    "id": "C1C64A1E-5C10-4A5F-8A3D-5F88E5C1A003",
+    "location": "",
+    "notes": "记得提前到场",
+    "repeatRule": "none",
+    "startTime": "12:00",
+    "title": "午餐聚会",
+    "weeks": [
+      15
+    ]
+  }
+]
