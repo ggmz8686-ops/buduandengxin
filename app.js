@@ -473,20 +473,7 @@ function resetMovableLayout() {
   });
 }
 
-function updateResetButtonPosition() {
-  if (!resetLayoutButton || !heroCollage) return;
-
-  const rect = heroCollage.getBoundingClientRect();
-  resetLayoutButton.style.setProperty("--reset-left", `${Math.max(12, rect.left - 10)}px`);
-  resetLayoutButton.style.setProperty("--reset-top", `${Math.max(12, rect.top + 30)}px`);
-}
-
 function bindResetLayout() {
-  if (resetLayoutButton?.parentElement !== document.body) {
-    document.body.appendChild(resetLayoutButton);
-  }
-  updateResetButtonPosition();
-
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".reset-layout")) return;
 
@@ -591,11 +578,9 @@ function init() {
   updateSkillWires();
 
   window.addEventListener("scroll", updateProgress, { passive: true });
-  window.addEventListener("scroll", updateResetButtonPosition, { passive: true });
   window.addEventListener("resize", () => {
     updateProgress();
     updateSkillWires();
-    updateResetButtonPosition();
   });
 }
 
