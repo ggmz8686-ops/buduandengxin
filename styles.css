@@ -246,6 +246,43 @@ h1 span::after {
   font-weight: 700;
 }
 
+.proof-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  max-width: 610px;
+  margin-top: 26px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.proof-strip div {
+  display: grid;
+  gap: 3px;
+  min-width: 132px;
+  padding: 13px 18px 12px 0;
+  margin-right: 18px;
+  border-right: 1px solid var(--line);
+}
+
+.proof-strip div:last-child {
+  border-right: 0;
+  margin-right: 0;
+}
+
+.proof-strip b {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.proof-strip span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -315,8 +352,8 @@ h1 span::after {
   --piece-y: 0px;
   --piece-mx: var(--mx);
   --piece-my: var(--my);
-  cursor: grab;
-  touch-action: none;
+  cursor: default;
+  touch-action: auto;
   user-select: none;
   will-change: transform, translate;
   z-index: 6;
@@ -806,6 +843,33 @@ h1 span::after {
   --tilt: calc(var(--base-rotate, 0deg) + var(--spin, 0deg));
 }
 
+.project-island::after {
+  content: attr(data-summary);
+  position: absolute;
+  left: 16px;
+  top: -58px;
+  z-index: 30;
+  width: 246px;
+  padding: 11px 13px;
+  border: 2px solid var(--ink);
+  background: var(--paper-2);
+  box-shadow: 5px 5px 0 var(--red);
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.55;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px) rotate(-1deg);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.project-island:hover::after,
+.project-island:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0) rotate(-1deg);
+}
+
 .project-island.is-visited .island-label {
   box-shadow:
     5px 5px 0 var(--red),
@@ -1099,30 +1163,6 @@ h1 span::after {
   background: var(--yellow);
 }
 
-.map-hint {
-  position: absolute;
-  left: auto;
-  right: 44px;
-  bottom: 34px;
-  display: grid;
-  gap: 6px;
-  width: min(230px, calc(100% - 88px));
-  padding: 16px 18px;
-  border: 2px solid var(--ink);
-  border-left: 7px solid var(--red);
-  background: var(--paper-2);
-  box-shadow: 7px 7px 0 rgba(16, 17, 22, 0.86);
-  transform: rotate(-1deg);
-}
-
-.map-hint b {
-  font-size: 1.05rem;
-}
-
-.map-hint span {
-  color: var(--muted);
-}
-
 .motion-reactive.is-reacting {
   --spin: calc((var(--mx) + var(--my)) * 5deg);
   transition-property: opacity, background, box-shadow;
@@ -1250,7 +1290,7 @@ h1 span::after {
 .skill-root,
 .skill-node,
 .skill-panel {
-  touch-action: none;
+  touch-action: auto;
 }
 
 .skill-node.is-dragging,
@@ -2128,13 +2168,6 @@ h1 span::after {
     left: 24px !important;
     right: auto !important;
     top: 820px;
-  }
-
-  .map-hint {
-    left: 26px;
-    right: auto;
-    bottom: 24px;
-    width: calc(100% - 52px);
   }
 
   .map-tourist {

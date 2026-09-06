@@ -25,15 +25,15 @@ const resetLayoutButton = document.querySelector(".reset-layout");
 const skillCopy = {
   ai: {
     title: "AI 编程协作",
-    desc: "用 Claude Code、Gemini、Cursor、Codex 和 GPT 做需求拆解、原型实现、代码协作、文案迭代和方案校验。",
+    desc: "把 AI 用在低成本验证上：快速搭建可交互原型，再回到用户目标、流程和异常情况校验方案。",
   },
   product: {
     title: "产品与原型",
-    desc: "用 Figma、Axure 和 ProcessOn 输出原型、流程图、信息架构和评审材料，把问题变成能沟通的界面与流程。",
+    desc: "用 Figma、Axure 和 ProcessOn 把研究洞察转成流程、字段、原型、优先级和评审材料。",
   },
   visual: {
     title: "视觉生成与 3D",
-    desc: "用 Midjourney、Stable Diffusion、即梦、ComfyUI 和 triple3D 做概念图、风格探索、素材生成和三维表达。",
+    desc: "用视觉和 3D 表达帮助团队理解场景，不把效果图当成结论，而是服务于概念沟通与体验评估。",
   },
   base: {
     title: "基础能力",
@@ -276,8 +276,8 @@ function bindSkillTree() {
   skillTree.addEventListener("mouseleave", () => {
     skillTree.dataset.active = "";
     skillNodes.forEach((item) => item.classList.remove("is-active"));
-    skillTitle.textContent = "滑过一个节点";
-    skillDesc.textContent = "查看它如何服务项目推进。";
+    skillTitle.textContent = "方法落到项目";
+    skillDesc.textContent = "悬停或点击一个节点，查看它如何支持研究、定义、交付和验证。";
     updateSkillWires();
   });
 }
@@ -486,6 +486,16 @@ function bindResetLayout() {
 function bindMapTourist() {
   if (!mapBoard) return;
 
+  islandButtons.forEach((island) => {
+    const label = island.querySelector("strong")?.textContent.trim();
+    const showIslandSummary = () => {
+      island.setAttribute("aria-label", `${label || "项目案例"}：${island.dataset.summary || "点击进入完整项目案例。"}`);
+    };
+
+    island.addEventListener("pointerover", showIslandSummary);
+    island.addEventListener("focusin", showIslandSummary);
+  });
+
   const tourState = {
     currentX: 50,
     currentY: 50,
@@ -568,10 +578,6 @@ function init() {
   bindCursorOrbit();
   bindReactiveMotion();
   bindSkillTree();
-  bindDraggableSkillCards();
-  bindDraggableProfileSlices();
-  bindDraggableCollagePieces();
-  bindResetLayout();
   bindMapTourist();
   bindMailPopover();
   updateProgress();
